@@ -124,12 +124,12 @@ guiLightsFolder.add(directionalLight.position, 'z').min(-5).max(5).step(0.001)
 
 
 const cubeMaterialProps = {
-    roughness: 0,
-    metalness: 0
+    roughness: 0.25,
+    metalness: 0.25
 }
 
 
-const cube = new RubiksCube(2, 0, environmentMap, scene)
+const cube = new RubiksCube(3, environmentMap, scene)
 
 const cubeMaterialFolder = gui.addFolder("Cube Material")
 cubeMaterialFolder.open()
@@ -154,8 +154,8 @@ function animate() {
     // Call tick again on the next frame
     window.requestAnimationFrame(animate)
 
-    cube.cubeGroup.rotation.x += 0.005
-    cube.cubeGroup.rotation.y += 0.005
+    // cube.cubeGroup.rotation.x += 0.005
+    cube.cubeGroup.rotation.y += 0.0025
 }
 
 animate()
