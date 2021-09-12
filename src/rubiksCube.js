@@ -3,7 +3,7 @@ import { RoundedBoxBufferGeometry } from 'three/examples/jsm/geometries/RoundedB
 
 
 const textureLoader = new THREE.TextureLoader()
-const displacementMap = textureLoader.load('/textures/displacement.png')
+const displacementMap = textureLoader.load('./textures/displacement.png')
 
 /**
  * Branch class using a cylinder that tapers towards the end.
@@ -11,11 +11,9 @@ const displacementMap = textureLoader.load('/textures/displacement.png')
 export default class RubiksCube {
 
     constructor(size, envMap, scene) {
-        this.cubeMatrix = new Array(4).fill(0).map(() => new Array(4).fill(0).map(() => new Array(4).fill(0)));
-        this.cubeGroup = new THREE.Group()
+        this.cubeMatrix = new Array(size).fill(0).map(() => new Array(size).fill(0).map(() => new Array(size).fill(0)));
+        this.cubes = []
         let materials = []
-
-        console.log(this.cubeMatrix);
 
         for (let i = 0; i < 6; i++) {
             const material = new THREE.MeshStandardMaterial({
@@ -36,23 +34,23 @@ export default class RubiksCube {
                         new RoundedBoxBufferGeometry(1, 1, 1, 6, 0.07),
                         materials
                     )
+                    cubeMesh.name = x + "" + y + "" + z
                     cubeMesh.position.set(
                         x - (size - 1) / 2,
                         y - (size - 1) / 2,
                         z - (size - 1) / 2)
                     this.cubeMatrix[x][y][z] = cubeMesh
-                    this.cubeGroup.add(cubeMesh)
+                    this.cubes.push(cubeMesh)
+                    scene.add(cubeMesh)
                 }
             }
         }
-        scene.add(this.cubeGroup)
-
     }
 
     updateMaterial(cubeMaterialProps) {
 
-        for (let i = 0; i < this.cubeGroup.children.length; i++) {
-            const element = this.cubeGroup.children[i];
+        for (let i = 0; i < this.cubes.length; i++) {
+            const element = this.cubes[i];
             for (let ii = 0; ii < element.material.length; ii++) {
                 const material = element.material[ii]
                 material.metalness = cubeMaterialProps.metalness
