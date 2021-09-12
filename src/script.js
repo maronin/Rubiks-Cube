@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import RubiksCube from './rubiksCube'
+import gsap from "gsap"
 
 /****************************************************************
  * Boilerplate ThreeJS stuff
@@ -81,7 +82,7 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
-const axesHelper = new THREE.AxesHelper()
+const axesHelper = new THREE.AxesHelper(6)
 scene.add(axesHelper)
 
 
@@ -129,16 +130,129 @@ const cubeMaterialProps = {
 }
 
 
-const cube = new RubiksCube(3, environmentMap, scene)
+const rubiksCube = new RubiksCube(3, environmentMap, scene)
 
 const cubeMaterialFolder = gui.addFolder("Cube Material")
 cubeMaterialFolder.open()
 cubeMaterialFolder.add(cubeMaterialProps, 'metalness', 0, 1, 0.0001).onChange(() => {
-    cube.updateMaterial(cubeMaterialProps)
+    rubiksCube.updateMaterial(cubeMaterialProps)
 })
 cubeMaterialFolder.add(cubeMaterialProps, 'roughness', 0, 1, 0.0001).onChange(() => {
-    cube.updateMaterial(cubeMaterialProps)
+    rubiksCube.updateMaterial(cubeMaterialProps)
 })
+
+/**
+ * 
+ * @param {array} matrix 
+ * @returns Returns the result rotated matrix
+ */
+//https://codereview.stackexchange.com/questions/186805/rotate-an-n-%C3%97-n-matrix-90-degrees-clockwise/186834
+//https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
+function rotate(matrix) {
+    let result = [];
+    for (let i = 0; i < matrix[0].length; i++) {
+        let row = matrix.map(e => e[i]).reverse();
+        result.push(row);
+    }
+    return result;
+};
+
+
+let rotating = false
+
+
+
+function rotateCube(axis, cubeSectionIndex, angle) {
+    if (!rotating) {
+        rotating = true
+        const group = new THREE.Group()
+        scene.add(group)
+
+        // This actually rotates the matrix
+        // rubiksCube[0] = rotate(rubiksCube.cubeMatrix[0])
+
+        const cubeMatrix = rubiksCube.cubeMatrix
+
+
+        for (let i = 0; i < cubeMatrix.length; i++) {
+            for (let ii = 0; ii < cubeMatrix.length; ii++) {
+                let cube
+                if (axis == "x") {
+                    cube = cubeMatrix[cubeSectionIndex][i][ii]
+                } else if (axis == "y") {
+                    cube = cubeMatrix[i][cubeSectionIndex][ii]
+                } else {
+                    cube = cubeMatrix[i][ii][cubeSectionIndex]
+                }
+                group.add(cube)
+            }
+        }
+
+
+        gsap.to(group.rotation, {
+            duration: .25,
+            x: axis == "x" ? group.rotation.x + (angle * Math.PI / 180) : group.rotation.x,
+            y: axis == "y" ? group.rotation.y + (angle * Math.PI / 180) : group.rotation.y,
+            z: axis == "z" ? group.rotation.y + (angle * Math.PI / 180) : group.rotation.z,
+            ease: "back",
+            onComplete: function() {
+
+                const cubes = []
+                group.children.forEach(cube => {
+                    cubes.push(cube)
+                });
+
+                cubes.forEach(cube => {
+                    scene.attach(cube)
+                    console.log(cube);
+
+                });
+                rotating = false
+                scene.remove(group)
+            }
+        })
+    }
+}
+
+
+const cubeRotations = {
+    rotateCube: rotateCube,
+}
+
+const rotateCubeFolder = gui.addFolder("Rotate")
+rotateCubeFolder.open()
+
+const rotateXFolder = rotateCubeFolder.addFolder("X")
+rotateXFolder.open()
+
+const rotateYFolder = rotateCubeFolder.addFolder("Y")
+rotateYFolder.open()
+
+const rotateZFolder = rotateCubeFolder.addFolder("Z")
+rotateZFolder.open()
+
+//https://stackoverflow.com/questions/26191484/dat-gui-function-invocation-with-parameters
+rotateXFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "x", 0, -90) }, "rotateX").name("0-")
+rotateXFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "x", 0, 90) }, "rotateX").name("0+")
+rotateXFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "x", 1, -90) }, "rotateX").name("1-")
+rotateXFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "x", 1, 90) }, "rotateX").name("1+")
+rotateXFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "x", 2, -90) }, "rotateX").name("2-")
+rotateXFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "x", 2, 90) }, "rotateX").name("2+")
+
+
+rotateYFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "y", 0, -90) }, "rotateX").name("0-")
+rotateYFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "y", 0, 90) }, "rotateX").name("0+")
+rotateYFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "y", 1, -90) }, "rotateX").name("1-")
+rotateYFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "y", 1, 90) }, "rotateX").name("1+")
+rotateYFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "y", 2, -90) }, "rotateX").name("2-")
+rotateYFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "y", 2, 90) }, "rotateX").name("2+")
+
+rotateZFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "z", 0, -90) }, "rotateX").name("0-")
+rotateZFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "z", 0, 90) }, "rotateX").name("0+")
+rotateZFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "z", 1, -90) }, "rotateX").name("1-")
+rotateZFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "z", 1, 90) }, "rotateX").name("1+")
+rotateZFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "z", 2, -90) }, "rotateX").name("2-")
+rotateZFolder.add({ rotateX: cubeRotations.rotateCube.bind(this, "z", 2, 90) }, "rotateX").name("2+")
 
 /**
  * Animation
@@ -155,7 +269,7 @@ function animate() {
     window.requestAnimationFrame(animate)
 
     // cube.cubeGroup.rotation.x += 0.005
-    cube.cubeGroup.rotation.y += 0.0025
+    // cube.cubeGroup.rotation.y += 0.0025
 }
 
 animate()
