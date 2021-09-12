@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js'
 import * as dat from 'dat.gui'
 import RubiksCube from './rubiksCube'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 /****************************************************************
  * Boilerplate ThreeJS stuff
@@ -13,7 +14,12 @@ import RubiksCube from './rubiksCube'
  * Canvas
  */
 const canvas = document.querySelector('canvas.webgl')
-
+const frontCanvas = document.querySelector('canvas.front-cam')
+const topCanvas = document.querySelector('canvas.top-cam')
+const bottomCanvas = document.querySelector('canvas.bottom-cam')
+const backCanvas = document.querySelector('canvas.back-cam')
+const leftCanvas = document.querySelector('canvas.left-cam')
+const rightCanvas = document.querySelector('canvas.right-cam')
 
 /**
  * Sizes
@@ -27,9 +33,9 @@ const sizes = {
 /**
  * Lights
  */
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+const ambientLight = new THREE.AmbientLight(0xffffff, 1)
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
-directionalLight.position.set(2, 2, -1)
+directionalLight.position.set(1, 2, 1)
 
 
 /**
@@ -40,6 +46,44 @@ camera.position.x = 0
 camera.position.y = 4
 camera.position.z = 4
 
+
+const frontCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, 1, 2)
+frontCamera.position.x = 0
+frontCamera.position.y = 0
+frontCamera.position.z = 3
+
+const topCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, 1, 2)
+topCamera.position.x = 0
+topCamera.position.y = 3
+topCamera.position.z = 0
+topCamera.lookAt(new THREE.Vector3())
+
+const bottomCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, 1, 2)
+bottomCamera.position.x = 0
+bottomCamera.position.y = -3
+bottomCamera.position.z = 0
+bottomCamera.lookAt(new THREE.Vector3())
+
+const backCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, 1, 2)
+backCamera.position.x = 0
+backCamera.position.y = 0
+backCamera.position.z = -3
+backCamera.lookAt(new THREE.Vector3())
+backCamera.rotation.z = 0
+
+const leftCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, 1, 2)
+leftCamera.position.x = -3
+leftCamera.position.y = 0
+leftCamera.position.z = 0
+leftCamera.lookAt(new THREE.Vector3())
+leftCamera.rotation.z = 0
+
+const rightCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, 1, 2)
+rightCamera.position.x = 3
+rightCamera.position.y = 0
+rightCamera.position.z = 0
+rightCamera.lookAt(new THREE.Vector3())
+const cameraHelper = new THREE.CameraHelper(rightCamera)
 
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 const environmentMap = cubeTextureLoader.load([
@@ -59,9 +103,16 @@ const scene = new THREE.Scene()
 scene.background = new THREE.Color('white');
 scene.background = environmentMap
 scene.add(camera)
+scene.add(frontCamera)
+scene.add(topCamera)
+scene.add(bottomCamera)
+scene.add(backCamera)
+scene.add(leftCamera)
+scene.add(rightCamera)
 scene.add(ambientLight)
 scene.add(directionalLight)
 
+// scene.add(cameraHelper)
 
 /**
  * Controls - Using Orbit Controls
@@ -81,6 +132,13 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+const frontRenderer = new THREE.WebGLRenderer({ canvas: frontCanvas })
+const topRenderer = new THREE.WebGLRenderer({ canvas: topCanvas })
+const bottomRenderer = new THREE.WebGLRenderer({ canvas: bottomCanvas })
+const backRenderer = new THREE.WebGLRenderer({ canvas: backCanvas })
+const leftRenderer = new THREE.WebGLRenderer({ canvas: leftCanvas })
+const rightRenderer = new THREE.WebGLRenderer({ canvas: rightCanvas })
 
 
 const axesHelper = new THREE.AxesHelper(6)
@@ -234,8 +292,13 @@ function animate() {
 
     // Render
     renderer.render(scene, camera)
-
-    // Call tick again on the next frame
+    frontRenderer.render(scene, frontCamera)
+    topRenderer.render(scene, topCamera)
+    bottomRenderer.render(scene, bottomCamera)
+    backRenderer.render(scene, backCamera)
+    leftRenderer.render(scene, leftCamera)
+    rightRenderer.render(scene, rightCamera)
+        // Call tick again on the next frame
     window.requestAnimationFrame(animate)
 
     // cube.cubeGroup.rotation.x += 0.005

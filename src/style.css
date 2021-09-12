@@ -16,6 +16,27 @@ body {
     outline: none;
 }
 
+.cube-map {
+    width: 225px !important;
+    position: fixed;
+    left: 0;
+    bottom: 10px;
+}
+
+.cube-map .col {
+    max-width: 75px;
+}
+
+.cube-map canvas {
+    width: 75px;
+    height: 75px;
+    display: block;
+}
+
+.front h2 {
+    text-align: center;
+}
+
 .instructions {
     color: white;
     justify-content: center;
