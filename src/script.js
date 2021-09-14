@@ -5,6 +5,8 @@ import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls
 import * as dat from 'dat.gui'
 import RubiksCube from './rubiksCube'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import Arrow3D from './arrow3D'
+import envMap from './environmentMap'
 
 /****************************************************************
  * Boilerplate ThreeJS stuff
@@ -86,22 +88,13 @@ rightCamera.lookAt(new THREE.Vector3())
 const cameraHelper = new THREE.CameraHelper(rightCamera)
 
 const cubeTextureLoader = new THREE.CubeTextureLoader()
-const environmentMap = cubeTextureLoader.load([
-    './textures/environmentMaps/colorful studio/px.png',
-    './textures/environmentMaps/colorful studio/nx.png',
-    './textures/environmentMaps/colorful studio/py.png',
-    './textures/environmentMaps/colorful studio/ny.png',
-    './textures/environmentMaps/colorful studio/pz.png',
-    './textures/environmentMaps/colorful studio/nz.png',
-])
-
 
 /**
  * Scene
  */
 const scene = new THREE.Scene()
 scene.background = new THREE.Color('white');
-scene.background = environmentMap
+scene.background = envMap
 scene.add(camera)
 scene.add(frontCamera)
 scene.add(topCamera)
@@ -144,6 +137,12 @@ const rightRenderer = new THREE.WebGLRenderer({ canvas: rightCanvas })
 const axesHelper = new THREE.AxesHelper(6)
     // scene.add(axesHelper)
 
+const arrow = new Arrow3D(new THREE.Vector3(1.5, 1.5, 0))
+const arrow2 = arrow.clone()
+scene.add(arrow)
+arrow2.rotation.y -= Math.PI
+arrow2.rotation.z = Math.PI / 2
+scene.add(arrow2)
 
 /**
  * Add an event listener for when the window gets resized.
@@ -187,7 +186,7 @@ const cubeMaterialProps = {
 }
 
 // Dynamic size doesn't work yet, only use 3
-const rubiksCube = new RubiksCube(3, environmentMap, scene)
+const rubiksCube = new RubiksCube(3, scene)
 
 const cubeMaterialFolder = gui.addFolder("Cube Material")
 cubeMaterialFolder.open()

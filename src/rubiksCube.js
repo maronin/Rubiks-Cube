@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { RoundedBoxBufferGeometry } from 'three/examples/jsm/geometries/RoundedBoxBufferGeometry';
 import gsap from "gsap"
-
+import envMap from './environmentMap'
 
 const textureLoader = new THREE.TextureLoader()
 const displacementMap = textureLoader.load('./textures/displacement.png')
@@ -11,7 +11,7 @@ const displacementMap = textureLoader.load('./textures/displacement.png')
  */
 export default class RubiksCube {
 
-    constructor(size, envMap, scene) {
+    constructor(size, scene) {
         this.cubeMatrix = new Array(size).fill(0).map(() => new Array(size).fill(0).map(() => new Array(size).fill(0)));
         this.cubes = []
         this.rotating = false
