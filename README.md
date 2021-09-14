@@ -1,6 +1,6 @@
 # Rubiks-Cube
 
-Its a Rubik's Cube!
+Its a Rubik's Cube. Check it out on my [website!](https://mark.aronin.ca/rubiks_cube/)
 
 ![chrome_9giE3SaJct](https://user-images.githubusercontent.com/1514285/133004138-c3f454ba-cd24-4c95-a650-9e052b00893b.png)
 
