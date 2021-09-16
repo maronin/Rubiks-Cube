@@ -48,8 +48,8 @@ export default class RubiksCube {
                     this.cubes.push(cubeMesh)
 
                     // If its a corner piece
-                    if (x == size - 1 || x == 0) {
-                        if (y == size - 1 || y == 0) {
+                    if (y == size - 1) {
+                        if (x == size - 1 || x == 0) {
                             if (z == size - 1 || z == 0) {
 
                                 const arrow = new Arrow3D(new THREE.Vector3())

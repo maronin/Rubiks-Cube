@@ -308,8 +308,10 @@ function checkArrowHover(event) {
     for (let i = 0; i < intersects.length; i++) {
         var hoveredObj = intersects[i].object.parent;
         if (hoveredArrows[hoveredObj.uuid]) {
+            document.body.style.cursor = 'pointer'
             continue; // this object was hovered and still hovered
         }
+
 
         hoveredObj.highlight()
 
@@ -324,6 +326,8 @@ function checkArrowHover(event) {
             let unhoveredObj = hoveredArrows[uuid];
             delete hoveredArrows[uuid];
             unhoveredObj.hide()
+            document.body.style.cursor = 'default'
+
         }
     }
 
