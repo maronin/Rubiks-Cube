@@ -137,12 +137,18 @@ const rightRenderer = new THREE.WebGLRenderer({ canvas: rightCanvas })
 const axesHelper = new THREE.AxesHelper(6)
     // scene.add(axesHelper)
 
-const arrow = new Arrow3D(new THREE.Vector3(1.5, 1.5, 0))
-const arrow2 = arrow.clone()
-scene.add(arrow)
-arrow2.rotation.y -= Math.PI
-arrow2.rotation.z = Math.PI / 2
-scene.add(arrow2)
+const arrows = new THREE.Group()
+arrows.name = "Arrows"
+
+// const arrow = new Arrow3D(new THREE.Vector3(1.5, 1.5, 0))
+// const arrow2 = new Arrow3D(new THREE.Vector3(1.5, 1.5, 0))
+// arrows.add(arrow)
+// arrow2.rotation.y -= Math.PI
+// arrow2.rotation.z = Math.PI / 2
+// arrows.add(arrow2)
+
+// scene.add(arrows)
+
 
 /**
  * Add an event listener for when the window gets resized.
@@ -280,6 +286,55 @@ rotateZFolder.add(cubeRotations, "rotateZ1B")
 rotateZFolder.add(cubeRotations, "rotateZ1F")
 rotateZFolder.add(cubeRotations, "rotateZ2B")
 rotateZFolder.add(cubeRotations, "rotateZ2F")
+
+var hoveredArrows = {};
+
+// https://stackoverflow.com/questions/55232295/mouseleave-in-three-js
+function checkArrowHover(event) {
+
+    event.preventDefault();
+    const raycaster = new THREE.Raycaster();
+    const mousePosition = new THREE.Vector2();
+    const rect = renderer.domElement.getBoundingClientRect();
+
+    mousePosition.x = ((event.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1;
+    mousePosition.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
+
+    raycaster.setFromCamera(mousePosition, camera);
+    var intersects = raycaster.intersectObjects(rubiksCube.arrows, true);
+
+    var hoveredArrowsUuids = intersects.map(el => el.object.parent.uuid);
+
+    for (let i = 0; i < intersects.length; i++) {
+        var hoveredObj = intersects[i].object.parent;
+        if (hoveredArrows[hoveredObj.uuid]) {
+            continue; // this object was hovered and still hovered
+        }
+
+        hoveredObj.highlight()
+
+        // collect hovered object
+        hoveredArrows[hoveredObj.uuid] = hoveredObj;
+    }
+
+    for (let uuid of Object.keys(hoveredArrows)) {
+        let idx = hoveredArrowsUuids.indexOf(uuid);
+        if (idx === -1) {
+            // object with given uuid was unhovered
+            let unhoveredObj = hoveredArrows[uuid];
+            delete hoveredArrows[uuid];
+            unhoveredObj.hide()
+        }
+    }
+
+    if (intersects.length > 0) {
+        // intersects[0].object.parent.highlight();
+
+    }
+}
+
+renderer.domElement.addEventListener("mousemove", checkArrowHover, true);
+
 
 /**
  * Animation

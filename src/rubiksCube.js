@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { RoundedBoxBufferGeometry } from 'three/examples/jsm/geometries/RoundedBoxBufferGeometry';
 import gsap from "gsap"
 import envMap from './environmentMap'
+import Arrow3D from './arrow3D'
 
 const textureLoader = new THREE.TextureLoader()
 const displacementMap = textureLoader.load('./textures/displacement.png')
@@ -14,6 +15,7 @@ export default class RubiksCube {
     constructor(size, scene) {
         this.cubeMatrix = new Array(size).fill(0).map(() => new Array(size).fill(0).map(() => new Array(size).fill(0)));
         this.cubes = []
+        this.arrows = []
         this.rotating = false
         this.scene = scene
         let materials = []
@@ -44,6 +46,57 @@ export default class RubiksCube {
                         z - (size - 1) / 2)
                     this.cubeMatrix[x][y][z] = cubeMesh
                     this.cubes.push(cubeMesh)
+
+                    // If its a corner piece
+                    if (x == size - 1 || x == 0) {
+                        if (y == size - 1 || y == 0) {
+                            if (z == size - 1 || z == 0) {
+
+                                const arrow = new Arrow3D(new THREE.Vector3())
+                                arrow.position.copy(cubeMesh.position)
+                                const arrow2 = new Arrow3D(new THREE.Vector3())
+
+                                if (y == size - 1) {
+                                    arrow.position.y += 0.3
+                                    arrow2.position.copy(arrow.position)
+                                    arrow2.rotation.copy(arrow.rotation)
+                                    if (x == 2 && z == 2) {
+                                        arrow2.rotation.y += Math.PI
+                                        arrow2.rotation.z += Math.PI * 90 / 180
+                                        arrow2.position.x += 0.3
+                                        arrow2.position.y -= 0.3
+
+                                    } else if (x == 0 && z == 2) {
+                                        arrow.rotation.y = Math.PI * 270 / 180
+
+                                        arrow2.rotation.y += Math.PI * 90 / 180
+                                        arrow2.rotation.z += Math.PI * 90 / 180
+                                        arrow2.position.z += 0.3
+                                        arrow2.position.y -= 0.3
+
+                                    } else if (x == 0 && z == 0) {
+                                        arrow.rotation.y = Math.PI * 180 / 180
+
+                                        arrow2.rotation.z += Math.PI * 90 / 180
+                                        arrow2.position.x -= 0.3
+                                        arrow2.position.y -= 0.3
+                                    } else if (x == 2 && z == 0) {
+                                        arrow.rotation.y = Math.PI * 90 / 180
+
+                                        arrow2.rotation.y += Math.PI * 270 / 180
+                                        arrow2.rotation.z += Math.PI * 90 / 180
+                                        arrow2.position.z -= 0.3
+                                        arrow2.position.y -= 0.3
+                                    }
+                                }
+
+                                scene.add(arrow2)
+                                scene.add(arrow)
+                                this.arrows.push(arrow, arrow2)
+
+                            }
+                        }
+                    }
                     scene.add(cubeMesh)
                 }
             }
