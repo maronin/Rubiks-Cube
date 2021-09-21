@@ -44,9 +44,9 @@ directionalLight.position.set(1, 2, 1)
  * Camera
  */
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000)
-camera.position.x = 0
-camera.position.y = 4
-camera.position.z = 4
+camera.position.x = 3
+camera.position.y = 3
+camera.position.z = 3
 
 
 const frontCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, 1, 2)
@@ -332,12 +332,33 @@ function checkArrowHover(event) {
     }
 
     if (intersects.length > 0) {
-        // intersects[0].object.parent.highlight();
+        intersects[0].object.parent.highlight();
 
     }
 }
 
+function arrowClick(event) {
+
+    event.preventDefault();
+    const raycaster = new THREE.Raycaster();
+    const mousePosition = new THREE.Vector2();
+    const rect = renderer.domElement.getBoundingClientRect();
+
+    mousePosition.x = ((event.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1;
+    mousePosition.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
+
+    raycaster.setFromCamera(mousePosition, camera);
+    var intersects = raycaster.intersectObjects(rubiksCube.arrows, true);
+
+    if (intersects.length > 0) {
+        intersects[0].object.parent.clicked(intersects[0].object, rubiksCube)
+    }
+}
+
+renderer.domElement.addEventListener("click", arrowClick, true);
 renderer.domElement.addEventListener("mousemove", checkArrowHover, true);
+
+camera.lookAt(new THREE.Vector3(1, 1, 0))
 
 
 /**

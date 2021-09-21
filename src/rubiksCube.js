@@ -18,19 +18,7 @@ export default class RubiksCube {
         this.arrows = []
         this.rotating = false
         this.scene = scene
-        let materials = []
-
-        for (let i = 0; i < 6; i++) {
-            const material = new THREE.MeshStandardMaterial({
-                map: textureLoader.load('./textures/' + i + '.png'),
-                envMap: envMap,
-                // wireframe: true
-            })
-            material.displacementMap = displacementMap
-            material.roughness = 0.25
-            material.metalness = 0.25
-            materials.push(material);
-        }
+        let materials = this.makeCubeMaterials()
 
         for (let x = 0; x < size; x++) {
             for (let y = 0; y < size; y++) {
@@ -48,59 +36,37 @@ export default class RubiksCube {
                     this.cubes.push(cubeMesh)
 
                     // If its a corner piece
-                    if (y == size - 1) {
-                        if (x == size - 1 || x == 0) {
-                            if (z == size - 1 || z == 0) {
 
-                                const arrow = new Arrow3D(new THREE.Vector3())
-                                arrow.position.copy(cubeMesh.position)
-                                const arrow2 = new Arrow3D(new THREE.Vector3())
-
-                                if (y == size - 1) {
-                                    arrow.position.y += 0.3
-                                    arrow2.position.copy(arrow.position)
-                                    arrow2.rotation.copy(arrow.rotation)
-                                    if (x == 2 && z == 2) {
-                                        arrow2.rotation.y += Math.PI
-                                        arrow2.rotation.z += Math.PI * 90 / 180
-                                        arrow2.position.x += 0.3
-                                        arrow2.position.y -= 0.3
-
-                                    } else if (x == 0 && z == 2) {
-                                        arrow.rotation.y = Math.PI * 270 / 180
-
-                                        arrow2.rotation.y += Math.PI * 90 / 180
-                                        arrow2.rotation.z += Math.PI * 90 / 180
-                                        arrow2.position.z += 0.3
-                                        arrow2.position.y -= 0.3
-
-                                    } else if (x == 0 && z == 0) {
-                                        arrow.rotation.y = Math.PI * 180 / 180
-
-                                        arrow2.rotation.z += Math.PI * 90 / 180
-                                        arrow2.position.x -= 0.3
-                                        arrow2.position.y -= 0.3
-                                    } else if (x == 2 && z == 0) {
-                                        arrow.rotation.y = Math.PI * 90 / 180
-
-                                        arrow2.rotation.y += Math.PI * 270 / 180
-                                        arrow2.rotation.z += Math.PI * 90 / 180
-                                        arrow2.position.z -= 0.3
-                                        arrow2.position.y -= 0.3
-                                    }
-                                }
-
-                                scene.add(arrow2)
-                                scene.add(arrow)
-                                this.arrows.push(arrow, arrow2)
-
-                            }
-                        }
+                    // Front Top Right Corner
+                    if (x == size - 1 && y == size - 1 && z == size - 1) {
+                        this.addFrontTopRightCornerArrows(cubeMesh.position, size)
                     }
+                    // Front Top Left Corner
+                    else if (x == 0 && y == size - 1 && z == size - 1) {
+                        this.addFrontTopLeftCornerArrows(cubeMesh.position, size)
+                    }
+
                     scene.add(cubeMesh)
                 }
             }
         }
+    }
+
+
+    makeCubeMaterials() {
+        let materials = []
+        for (let i = 0; i < 6; i++) {
+            const material = new THREE.MeshStandardMaterial({
+                map: textureLoader.load('./textures/' + i + '.png'),
+                envMap: envMap,
+                // wireframe: true
+            })
+            material.displacementMap = displacementMap
+            material.roughness = 0.25
+            material.metalness = 0.25
+            materials.push(material);
+        }
+        return materials
     }
 
 
@@ -119,6 +85,7 @@ export default class RubiksCube {
             })
         }
     }
+
 
     /**
      * Rotate the cube sections based on the pass in parameters
@@ -184,5 +151,55 @@ export default class RubiksCube {
             }
         }
     }
+
+
+    addFrontTopRightCornerArrows(pos, size) {
+        // X Arrows
+        let rot = new THREE.Euler(0, Math.PI * 270 / 180, 0)
+        this.addArrowToCube(new Arrow3D(pos, rot, 0, (size - 1) / 2, false))
+        rot = new THREE.Euler(Math.PI * 90 / 180, Math.PI * 90 / 180, 0)
+        this.addArrowToCube(new Arrow3D(pos, rot, 0, (size - 1) / 2, true))
+
+        // Y Arrows
+        rot = new THREE.Euler(Math.PI * 90 / 180, 0, 0)
+        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, false))
+        rot = new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 270 / 180)
+        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, true))
+
+        // Z Arrows
+        rot = new THREE.Euler()
+        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, true))
+        rot = new THREE.Euler(0, Math.PI, Math.PI * 90 / 180)
+        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, false))
+    }
+
+
+    addFrontTopLeftCornerArrows(pos, size) {
+        // X Arrows
+        let rot = new THREE.Euler(0, Math.PI * 270 / 180, 0)
+        this.addArrowToCube(new Arrow3D(pos, rot, 0, -1, false))
+        rot = new THREE.Euler(0, Math.PI * 90 / 180, Math.PI * 90 / 180)
+        this.addArrowToCube(new Arrow3D(pos, rot, 0, -1, true))
+
+        // Y Arrows
+        rot = new THREE.Euler(Math.PI * 90 / 180, 0, Math.PI * 90 / 180)
+        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, false))
+        rot = new THREE.Euler(Math.PI * 90 / 180, Math.PI * 180 / 180, 0)
+        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, true))
+
+        // Z Arrows
+        rot = new THREE.Euler(0, Math.PI, 0)
+        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, false))
+        rot = new THREE.Euler(0, 0, Math.PI * 90 / 180)
+        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, true))
+    }
+
+
+    addArrowToCube(arrow) {
+        this.scene.add(arrow)
+        this.arrows.push(arrow)
+    }
+
+
 
 }
