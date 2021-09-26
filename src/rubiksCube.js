@@ -19,7 +19,7 @@ export default class RubiksCube {
         this.rotating = false
         this.scene = scene
         let materials = this.makeCubeMaterials()
-
+        const aSize = size - 1 // Cube array size
         for (let x = 0; x < size; x++) {
             for (let y = 0; y < size; y++) {
                 for (let z = 0; z < size; z++) {
@@ -38,12 +38,12 @@ export default class RubiksCube {
                     // If its a corner piece
 
                     // Front Top Right Corner
-                    if (x == size - 1 && y == size - 1 && z == size - 1) {
+                    if (x == aSize && y == aSize && z == aSize) {
                         this.addFrontTopRightCornerArrows(cubeMesh.position, size)
-                    }
-                    // Front Top Left Corner
-                    else if (x == 0 && y == size - 1 && z == size - 1) {
+                    } else if (x == 0 && y == aSize && z == aSize) {
                         this.addFrontTopLeftCornerArrows(cubeMesh.position, size)
+                    } else if (x == 0 && y == aSize && z == 0) {
+                        this.addBackTopLeftCornerArrows(cubeMesh.position, size)
                     }
 
                     scene.add(cubeMesh)
@@ -155,45 +155,47 @@ export default class RubiksCube {
 
     addFrontTopRightCornerArrows(pos, size) {
         // X Arrows
-        let rot = new THREE.Euler(0, Math.PI * 270 / 180, 0)
-        this.addArrowToCube(new Arrow3D(pos, rot, 0, (size - 1) / 2, false))
-        rot = new THREE.Euler(Math.PI * 90 / 180, Math.PI * 90 / 180, 0)
-        this.addArrowToCube(new Arrow3D(pos, rot, 0, (size - 1) / 2, true))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, 0), 0, (size - 1) / 2, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, Math.PI * 90 / 180, 0), 0, (size - 1) / 2, true))
 
         // Y Arrows
-        rot = new THREE.Euler(Math.PI * 90 / 180, 0, 0)
-        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, false))
-        rot = new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 270 / 180)
-        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, true))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, 0, 0), 1, (size - 1) / 2, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 270 / 180), 1, (size - 1) / 2, true))
 
         // Z Arrows
-        rot = new THREE.Euler()
-        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, true))
-        rot = new THREE.Euler(0, Math.PI, Math.PI * 90 / 180)
-        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(), 2, (size - 1) / 2, true))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, Math.PI * 90 / 180), 2, (size - 1) / 2, false))
     }
 
 
     addFrontTopLeftCornerArrows(pos, size) {
         // X Arrows
-        let rot = new THREE.Euler(0, Math.PI * 270 / 180, 0)
-        this.addArrowToCube(new Arrow3D(pos, rot, 0, -1, false))
-        rot = new THREE.Euler(0, Math.PI * 90 / 180, Math.PI * 90 / 180)
-        this.addArrowToCube(new Arrow3D(pos, rot, 0, -1, true))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, 0), 0, -1, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 90 / 180, Math.PI * 90 / 180), 0, -1, true))
 
         // Y Arrows
-        rot = new THREE.Euler(Math.PI * 90 / 180, 0, Math.PI * 90 / 180)
-        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, false))
-        rot = new THREE.Euler(Math.PI * 90 / 180, Math.PI * 180 / 180, 0)
-        this.addArrowToCube(new Arrow3D(pos, rot, 1, (size - 1) / 2, true))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, 0, Math.PI * 90 / 180), 1, (size - 1) / 2, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, Math.PI * 180 / 180, 0), 1, (size - 1) / 2, true))
 
         // Z Arrows
-        rot = new THREE.Euler(0, Math.PI, 0)
-        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, false))
-        rot = new THREE.Euler(0, 0, Math.PI * 90 / 180)
-        this.addArrowToCube(new Arrow3D(pos, rot, 2, (size - 1) / 2, true))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, 0), 2, (size - 1) / 2, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, Math.PI * 90 / 180), 2, (size - 1) / 2, true))
     }
 
+
+    addBackTopLeftCornerArrows(pos, size) {
+        //X Arrows
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, Math.PI * 90 / 180), 0, -1, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 90 / 180, 0), 0, -1, true))
+
+        //Y Arrows
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, Math.PI, 0), 1, 1, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 90 / 180), 1, 1, true))
+
+        //Z Arrows
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, 0), 2, -1, false))
+        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, Math.PI * 90 / 180), 2, -1, true))
+    }
 
     addArrowToCube(arrow) {
         this.scene.add(arrow)
