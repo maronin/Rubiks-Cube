@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import envMap from './environmentMap'
 
 
-const opacity = 1
+const opacity = 0.1
 export default class Arrow3D extends THREE.Group {
     constructor(pos = new THREE.Vector3(), rot = new THREE.Vector3(), axes, cubeSection, forward) {
         super()
@@ -13,7 +13,7 @@ export default class Arrow3D extends THREE.Group {
             envMap: envMap,
             metalness: 0.2,
             roughness: 1,
-            color: "white",
+            color: "pink",
             transparent: true,
             opacity: opacity
         })
@@ -49,17 +49,9 @@ export default class Arrow3D extends THREE.Group {
 
 
     highlight() {
-
         this.children.forEach(child => {
             child.material.opacity = 1
         });
-
-
-
-
-        // 
-
-
     }
 
     hide() {
@@ -69,30 +61,6 @@ export default class Arrow3D extends THREE.Group {
     }
 
     clicked(object, rubiksCube) {
-        console.log("hello");
         rubiksCube.rotateCubeSection(this.axes, this.cubeSection, 90 * (this.forward ? 1 : -1))
-            /*
-            console.log(THREE.MathUtils.radToDeg(object.parent.rotation.x))
-            console.log(THREE.MathUtils.radToDeg(object.parent.rotation.y))
-            console.log(THREE.MathUtils.radToDeg(object.parent.rotation.z))
-            console.log(this.parent.position);
-            console.log(object)
-            const rotX = THREE.MathUtils.radToDeg(this.rotation.x)
-            const rotY = THREE.MathUtils.radToDeg(this.rotation.y)
-            const rotZ = THREE.MathUtils.radToDeg(this.rotation.z)
-            const posX = this.parent.position.x
-            const posY = this.parent.position.y
-            const posZ = this.parent.position.z
-        
-            if (posX == 1 && posY == 1 && posZ == -1) {
-                if (rotX == 0 && rotY == 0 && rotZ == 0) {
-                    rubiksCube.rotateCubeSection(2, posZ, 90)
-                } else if (rotX == 180 && rotY == 0 && rotZ == 270) {
-                    rubiksCube.rotateCubeSection(2, posZ, -90)
-                }
-            }
-            //0,0,0 1,1, -1 = 0, 
-
-            console.log("arrow clicked");*/
     }
 }
