@@ -337,6 +337,8 @@ function checkArrowHover(event) {
     }
 }
 
+let currArrowClicked
+
 function arrowClick(event) {
 
     event.preventDefault();
@@ -350,12 +352,22 @@ function arrowClick(event) {
     raycaster.setFromCamera(mousePosition, camera);
     var intersects = raycaster.intersectObjects(rubiksCube.arrows, true);
 
+
     if (intersects.length > 0) {
-        intersects[0].object.parent.clicked(intersects[0].object, rubiksCube)
+        if (currArrowClicked == intersects[0].object && event.type == "pointerup") {
+            intersects[0].object.parent.clicked(intersects[0].object, rubiksCube)
+            currArrowClicked = null
+        } else {
+            currArrowClicked = intersects[0].object
+        }
     }
+
 }
 
-renderer.domElement.addEventListener("click", arrowClick, true);
+
+//https://discourse.threejs.org/t/mousedown-event-is-not-getting-triggered/18685
+renderer.domElement.addEventListener("pointerdown", arrowClick, true);
+renderer.domElement.addEventListener("pointerup", arrowClick, true);
 renderer.domElement.addEventListener("mousemove", checkArrowHover, true);
 
 camera.lookAt(new THREE.Vector3(1, 1, 0))
