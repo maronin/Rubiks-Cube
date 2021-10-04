@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import envMap from './environmentMap'
 
 
-const opacity = 0.1
+const opacity = 0.25
 export default class Arrow3D extends THREE.Group {
     constructor(pos = new THREE.Vector3(), rot = new THREE.Vector3(), axes, cubeSection, forward) {
         super()
@@ -13,7 +13,7 @@ export default class Arrow3D extends THREE.Group {
             envMap: envMap,
             metalness: 0.2,
             roughness: 1,
-            color: "pink",
+            color: "lime",
             transparent: true,
             opacity: opacity
         })
@@ -26,12 +26,10 @@ export default class Arrow3D extends THREE.Group {
             new THREE.ConeBufferGeometry(.15, .3, 18, 2),
             arrowMaterial
         )
-        const axesHelper = new THREE.AxesHelper(1)
-            // this.add(axesHelper)
+
         arrowBody.rotation.z = Math.PI / 4
         arrowBody.position.y += 0.3
         arrowBody.position.x += 0.3
-
 
         arrowHead.position.x += .15
         arrowHead.position.y += .75

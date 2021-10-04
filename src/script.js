@@ -133,21 +133,8 @@ const backRenderer = new THREE.WebGLRenderer({ canvas: backCanvas })
 const leftRenderer = new THREE.WebGLRenderer({ canvas: leftCanvas })
 const rightRenderer = new THREE.WebGLRenderer({ canvas: rightCanvas })
 
-
-const axesHelper = new THREE.AxesHelper(6)
-    // scene.add(axesHelper)
-
 const arrows = new THREE.Group()
 arrows.name = "Arrows"
-
-// const arrow = new Arrow3D(new THREE.Vector3(1.5, 1.5, 0))
-// const arrow2 = new Arrow3D(new THREE.Vector3(1.5, 1.5, 0))
-// arrows.add(arrow)
-// arrow2.rotation.y -= Math.PI
-// arrow2.rotation.z = Math.PI / 2
-// arrows.add(arrow2)
-
-// scene.add(arrows)
 
 
 /**
@@ -203,89 +190,10 @@ cubeMaterialFolder.add(cubeMaterialProps, 'roughness', 0, 1, 0.0001).onChange(()
     rubiksCube.updateMaterial(cubeMaterialProps)
 })
 
-// Buttons for rotating the X
-const rotateX0B = () => { rubiksCube.rotateCubeSection(0, -1, -90) }
-const rotateX1B = () => { rubiksCube.rotateCubeSection(0, 0, -90) }
-const rotateX2B = () => { rubiksCube.rotateCubeSection(0, 1, -90) }
-const rotateX0F = () => { rubiksCube.rotateCubeSection(0, -1, 90) }
-const rotateX1F = () => { rubiksCube.rotateCubeSection(0, 0, 90) }
-const rotateX2F = () => { rubiksCube.rotateCubeSection(0, 1, 90) }
+var randomizeCube = { randomizeCube: function() { rubiksCube.randomizeCube(60, 0.025) } };
 
-// Buttons for rotating the Y
-const rotateY0B = () => { rubiksCube.rotateCubeSection(1, -1, -90) }
-const rotateY1B = () => { rubiksCube.rotateCubeSection(1, 0, -90) }
-const rotateY2B = () => { rubiksCube.rotateCubeSection(1, 1, -90) }
-const rotateY0F = () => { rubiksCube.rotateCubeSection(1, -1, 90) }
-const rotateY1F = () => { rubiksCube.rotateCubeSection(1, 0, 90) }
-const rotateY2F = () => { rubiksCube.rotateCubeSection(1, 1, 90) }
+gui.add(randomizeCube, 'randomizeCube');
 
-// Buttons for rotating the Z
-const rotateZ0B = () => { rubiksCube.rotateCubeSection(2, -1, -90) }
-const rotateZ1B = () => { rubiksCube.rotateCubeSection(2, 0, -90) }
-const rotateZ2B = () => { rubiksCube.rotateCubeSection(2, 1, -90) }
-const rotateZ0F = () => { rubiksCube.rotateCubeSection(2, -1, 90) }
-const rotateZ1F = () => { rubiksCube.rotateCubeSection(2, 0, 90) }
-const rotateZ2F = () => { rubiksCube.rotateCubeSection(2, 1, 90) }
-
-// Randomize the cube
-const randomizeCube = () => { rubiksCube.randomizeCube(60, 0.025) }
-
-const cubeRotations = {
-    rotateX0B,
-    rotateX1B,
-    rotateX2B,
-    rotateX0F,
-    rotateX1F,
-    rotateX2F,
-    rotateY0B,
-    rotateY1B,
-    rotateY2B,
-    rotateY0F,
-    rotateY1F,
-    rotateY2F,
-    rotateZ0B,
-    rotateZ1B,
-    rotateZ2B,
-    rotateZ0F,
-    rotateZ1F,
-    rotateZ2F,
-    randomizeCube
-}
-
-const rotateCubeFolder = gui.addFolder("Rotate")
-rotateCubeFolder.open()
-
-rotateCubeFolder.add(cubeRotations, "randomizeCube")
-
-const rotateXFolder = rotateCubeFolder.addFolder("X")
-    // rotateXFolder.open()
-
-const rotateYFolder = rotateCubeFolder.addFolder("Y")
-    // rotateYFolder.open()
-
-const rotateZFolder = rotateCubeFolder.addFolder("Z")
-    // rotateZFolder.open()
-
-rotateXFolder.add(cubeRotations, "rotateX0B")
-rotateXFolder.add(cubeRotations, "rotateX0F")
-rotateXFolder.add(cubeRotations, "rotateX1B")
-rotateXFolder.add(cubeRotations, "rotateX1F")
-rotateXFolder.add(cubeRotations, "rotateX2B")
-rotateXFolder.add(cubeRotations, "rotateX2F")
-
-rotateYFolder.add(cubeRotations, "rotateY0B")
-rotateYFolder.add(cubeRotations, "rotateY0F")
-rotateYFolder.add(cubeRotations, "rotateY1B")
-rotateYFolder.add(cubeRotations, "rotateY1F")
-rotateYFolder.add(cubeRotations, "rotateY2B")
-rotateYFolder.add(cubeRotations, "rotateY2F")
-
-rotateZFolder.add(cubeRotations, "rotateZ0B")
-rotateZFolder.add(cubeRotations, "rotateZ0F")
-rotateZFolder.add(cubeRotations, "rotateZ1B")
-rotateZFolder.add(cubeRotations, "rotateZ1F")
-rotateZFolder.add(cubeRotations, "rotateZ2B")
-rotateZFolder.add(cubeRotations, "rotateZ2F")
 
 var hoveredArrows = {};
 

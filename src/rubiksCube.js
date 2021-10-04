@@ -35,20 +35,9 @@ export default class RubiksCube {
                     this.cubeMatrix[x][y][z] = cubeMesh
                     this.cubes.push(cubeMesh)
 
-                    // If its a corner piece
-
-                    // Front Top Right Corner
-                    if (y == aSize) {
-                        if (x == aSize && z == aSize) {
-                            this.addFrontTopRightCornerArrows(cubeMesh.position, size)
-                        } else if (x == 0 && z == aSize) {
-                            this.addFrontTopLeftCornerArrows(cubeMesh.position, size)
-                        } else if (x == 0 && z == 0) {
-                            this.addBackTopLeftCornerArrows(cubeMesh.position, size)
-                        } else if (x == aSize && z == 0) {
-                            this.addBackTopRightCornerArrows(cubeMesh.position, size)
-                        }
-                    }
+                    this.addXArrows(cubeMesh.position, size, x, y, z)
+                    this.addYArrows(cubeMesh.position, size, x, y, z)
+                    this.addZArrows(cubeMesh.position, size, x, y, z)
 
                     scene.add(cubeMesh)
                 }
@@ -157,75 +146,74 @@ export default class RubiksCube {
     }
 
 
-    /**
-     * Top Arrow Cubes
-     */
-
-
-    addFrontTopRightCornerArrows(pos, size) {
-        // X Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, 0), 0, (size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, Math.PI * 90 / 180, 0), 0, (size - 1) / 2, true))
-
-        // Y Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, 0, 0), 1, (size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 270 / 180), 1, (size - 1) / 2, true))
-
-        // Z Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(), 2, (size - 1) / 2, true))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, Math.PI * 90 / 180), 2, (size - 1) / 2, false))
+    addXArrows(pos, size, x, y, z) {
+        let cubeSectionX = x - (size - (size / 2 + 0.5))
+        if (y == size - 1) {
+            if (z == size - 1) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, 0), 0, cubeSectionX, false))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 90 / 180, Math.PI * 90 / 180), 0, cubeSectionX, true))
+            } else if (z == 0) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 90 / 180, 0), 0, cubeSectionX, true))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, Math.PI * 90 / 180), 0, cubeSectionX, false))
+            }
+        } else if (y == 0) {
+            if (z == size - 1) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 180 / 180, Math.PI * 90 / 180, 0), 0, cubeSectionX, true))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, Math.PI * 270 / 180, 0), 0, cubeSectionX, false))
+            } else if (z == 0) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, Math.PI * 90 / 180, 0), 0, cubeSectionX, true))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 180 / 180, Math.PI * 270 / 180, 0), 0, cubeSectionX, false))
+            }
+        }
     }
 
 
-    addFrontTopLeftCornerArrows(pos, size) {
-        // X Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, 0), 0, -(size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 90 / 180, Math.PI * 90 / 180), 0, -(size - 1) / 2, true))
-
-        // Y Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, 0, Math.PI * 90 / 180), 1, (size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, Math.PI * 180 / 180, 0), 1, (size - 1) / 2, true))
-
-        // Z Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, 0), 2, (size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, Math.PI * 90 / 180), 2, (size - 1) / 2, true))
+    addYArrows(pos, size, x, y, z) {
+        let cubeSectionY = y - (size - (size / 2 + 0.5))
+        if (z == size - 1) {
+            if (x == size - 1) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, 0, 0), 1, cubeSectionY, false))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 270 / 180), 1, cubeSectionY, true))
+            } else if (x == 0) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, 0, Math.PI * 90 / 180), 1, cubeSectionY, false))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 90 / 180, Math.PI * 180 / 180, 0), 1, cubeSectionY, true))
+            }
+        } else if (z == 0) {
+            if (x == size - 1) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, 0), 1, cubeSectionY, true))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, Math.PI, Math.PI * 90 / 180), 1, cubeSectionY, false))
+            } else if (x == 0) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, Math.PI, 0), 1, cubeSectionY, false))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 90 / 180), 1, cubeSectionY, true))
+            }
+        }
     }
 
 
-    addBackTopLeftCornerArrows(pos, size) {
-        //X Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, Math.PI * 90 / 180), 0, -(size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 90 / 180, 0), 0, -(size - 1) / 2, true))
-
-        //Y Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, Math.PI, 0), 1, (size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, Math.PI * 90 / 180), 1, (size - 1) / 2, true))
-
-        //Z Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, 0), 2, -(size - 1) / 2, false))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, Math.PI * 90 / 180), 2, -(size - 1) / 2, true))
-    }
-
-
-    addBackTopRightCornerArrows(pos, size) {
-        //X Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 90 / 180, 0), 0, (size - 1) / 2, true))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI * 270 / 180, Math.PI * 90 / 180), 0, (size - 1) / 2, false))
-
-        //Y Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, 0, 0), 1, (size - 1) / 2, true))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 270 / 180, Math.PI, Math.PI * 90 / 180), 1, (size - 1) / 2, false))
-
-        //Z Arrows
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, 0), 2, -(size - 1) / 2, true))
-        this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, Math.PI * 90 / 180), 2, -(size - 1) / 2, false))
+    addZArrows(pos, size, x, y, z) {
+        let cubeSectionZ = z - (size - (size / 2 + 0.5))
+        if (x == size - 1) {
+            if (y == size - 1) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, 0), 2, cubeSectionZ, true))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, Math.PI * 90 / 180), 2, cubeSectionZ, false))
+            } else if (y == 0) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, Math.PI * 270 / 180), 2, cubeSectionZ, true))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI * 180 / 180, 0, 0), 2, cubeSectionZ, false))
+            }
+        } else if (x == 0) {
+            if (y == size - 1) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, 0), 2, cubeSectionZ, false))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, 0, Math.PI * 90 / 180), 2, cubeSectionZ, true))
+            } else if (y == 0) {
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(0, Math.PI, Math.PI * 270 / 180), 2, cubeSectionZ, false))
+                this.addArrowToCube(new Arrow3D(pos, new THREE.Euler(Math.PI, Math.PI, 0), 2, cubeSectionZ, true))
+            }
+        }
     }
 
     addArrowToCube(arrow) {
         this.scene.add(arrow)
         this.arrows.push(arrow)
     }
-
-
 
 }
